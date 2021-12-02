@@ -1,5 +1,6 @@
 ﻿using YemekTBackend.Models;
 using Google.Cloud.Firestore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace YemekTBackend.Services
 {
@@ -19,10 +20,9 @@ namespace YemekTBackend.Services
 
         public static List<Yemek> GetAll() => Yemekler;
 
-        public static async Task<Dictionary<string, object>> test()
+        public static async Task<ActionResult<Dictionary<string, object>>> getYemek()
         {
             var veri = new Dictionary<string, object>();
-
             DocumentReference docref = database.Collection("yemekler").Document("09a24398-d8b6-4f02-ad3b-209fd4aaa8b1");
             DocumentSnapshot snap = await docref.GetSnapshotAsync();
             if (snap.Exists)
@@ -33,8 +33,6 @@ namespace YemekTBackend.Services
                     veri.Add(item.Key, item.Value);
                 }
             }
-
-
             return veri;
         }
 
