@@ -14,6 +14,7 @@ namespace YemekTBackend.Controllers
         [HttpGet("test")]
         public Task<ActionResult<Dictionary<string, object>>> test()
         {
+            // firebase'e erisiyor
             return YemekService.getYemek();
         }
 
@@ -21,6 +22,7 @@ namespace YemekTBackend.Controllers
         [HttpGet("all")]
         public ActionResult<List<Yemek>> GetAll()
         {
+            // localde calisiyor
             return YemekService.GetAll();
         }
     }
