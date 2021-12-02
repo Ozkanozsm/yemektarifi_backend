@@ -25,6 +25,13 @@ namespace YemekTBackend.Controllers
             return "value";
         }
 
+        [HttpGet("test")]
+        public Task<Dictionary<string, object>> test()
+        {
+            return YemekService.test();
+        }
+
+
         [HttpGet("all")]
         public ActionResult<List<Yemek>> GetAll()
         {
