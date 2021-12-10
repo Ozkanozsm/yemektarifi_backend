@@ -9,33 +9,36 @@ namespace YemekTBackend.Models
     {
 
         // TODO BOZUK string to Int32
-        [FirestoreProperty]
+        [FirestoreProperty("adminOnayi")]
         public int adminOnayi { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("begenenler")]
         public List<string> begenenler { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("hazirlanmaSuresi")]
         public int hazirlanmaSuresi { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("kategori")]
         public string kategori { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("malzemeler")]
         public List<string> malzemeler { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("olusturanID")]
         public int olusturanID { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("olusturmaTarihi")]
         public string olusturmaTarihi { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty("yemekID")]
+        public string yemekID { get; set; }
+
+        [FirestoreProperty("yemekIsim")]
         public string yemekIsim { get; set; }
+        //fixed int->string
 
-        [FirestoreProperty]
-        public int yemekID { get; set; }
-
+        [FirestoreProperty("yemekTarif")]
+        public string yemekTarif { get; set; }
 
     }
 }

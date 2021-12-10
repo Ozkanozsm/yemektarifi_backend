@@ -19,6 +19,14 @@ namespace YemekTBackend.Controllers
         }
 
 
+        [HttpGet("getallTest")]
+        public Task<ActionResult<List<string>>> getallyemekTest()
+        {
+            // firebase'e erisiyor
+            return YemekService.getallyemekTest();
+        }
+
+
         [HttpGet("all")]
         public ActionResult<List<Yemek>> GetAll()
         {

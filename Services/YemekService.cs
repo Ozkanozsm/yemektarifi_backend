@@ -14,8 +14,8 @@ namespace YemekTBackend.Services
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
             database = FirestoreDb.Create("yemektarifi-8bc5d");
             Yemekler = new List<Yemek>();
-            Yemekler.Add(new Yemek() { yemekID = 1, yemekIsim = "ÇORBAAA" });
-            Yemekler.Add(new Yemek() { yemekID = 2, yemekIsim = "YEMEQQ" });
+            Yemekler.Add(new Yemek() { yemekID = "1", yemekIsim = "ÇORBAAA" });
+            Yemekler.Add(new Yemek() { yemekID = "2", yemekIsim = "YEMEQQ" });
         }
 
         public static List<Yemek> GetAll() => Yemekler;
@@ -58,6 +58,23 @@ namespace YemekTBackend.Services
             }
 
             return veri;
+        }
+
+        public static async Task<ActionResult<List<string>>> getallyemekTest()
+        {
+            List<string> veri = new List<string>();
+            CollectionReference colref = database.Collection("yemekler");
+            QuerySnapshot allYemeks = await colref.GetSnapshotAsync();
+            foreach (DocumentSnapshot document in allYemeks.Documents)
+            {
+                // Do anything you'd normally do with a DocumentSnapshot
+                Yemek _yemekim = document.ConvertTo<Yemek>();
+                veri.Add(_yemekim.ToString());
+            }
+
+
+            return veri;
+
         }
 
         /*
