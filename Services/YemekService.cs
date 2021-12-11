@@ -75,24 +75,21 @@ namespace YemekTBackend.Services
 
         }
 
-        /*
-        public static async Task<ActionResult<List<Dictionary<string, object>>>> getAllYemek()
+
+        public static async Task<ActionResult<Yemek>> putNewYemek(Yemek _yemek)
         {
-            List<Yemek> yemeks = new List<Yemek>();
-            Query Qref = database.Collection("yemekler");
-            QuerySnapshot snap = await Qref.GetSnapshotAsync();
-            foreach (DocumentSnapshot docsnap in snap)
-            {
-                Yemek yemek = docsnap.ConvertTo<Yemek>();
-                yemeks.Add(yemek);
-            }
+            // TODO gecici obje oluturup onu Yemek'e convert et
+            CollectionReference colref = database.Collection("yemekler");
+            _yemek.adminOnayi = 0;
+            _yemek.begenenler = new List<string>();
+            _yemek.olusturanID = 0;
+            _yemek.olusturmaTarihi = DateTime.Now.ToString();
+            
+            // var yeniguid = System.Guid.NewGuid().ToString();
+            // kullanmaya gerek yok gibi, firebase kendisi unique bir deger atiyor
 
-            //return new Yemek() { };
+            await colref.AddAsync(_yemek);
+            return _yemek;
         }
-        */
-
-
-
-
     }
 }

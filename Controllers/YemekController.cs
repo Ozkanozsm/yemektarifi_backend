@@ -26,6 +26,16 @@ namespace YemekTBackend.Controllers
             return YemekService.getallYemek();
         }
 
+        [HttpPost("ekle")]
+        public Task<ActionResult<Yemek>> YemekEkle(Yemek _yemek)
+        {
+            // CONTROLLERI BURADA YAP
+
+            return YemekService.putNewYemek(_yemek);
+
+        }
+
+
 
         [HttpGet("oldall")]
         public ActionResult<List<Yemek>> GetAll()
