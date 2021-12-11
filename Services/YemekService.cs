@@ -60,19 +60,17 @@ namespace YemekTBackend.Services
             return veri;
         }
 
-        public static async Task<ActionResult<List<string>>> getallyemekTest()
+        public static async Task<ActionResult<List<Yemek>>> getallYemek()
         {
-            List<string> veri = new List<string>();
+            List<Yemek> veri = new List<Yemek>();
             CollectionReference colref = database.Collection("yemekler");
             QuerySnapshot allYemeks = await colref.GetSnapshotAsync();
             foreach (DocumentSnapshot document in allYemeks.Documents)
             {
                 // Do anything you'd normally do with a DocumentSnapshot
                 Yemek _yemekim = document.ConvertTo<Yemek>();
-                veri.Add(_yemekim.ToString());
+                veri.Add(_yemekim);
             }
-
-
             return veri;
 
         }

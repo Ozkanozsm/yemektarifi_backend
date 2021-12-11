@@ -8,7 +8,6 @@ namespace YemekTBackend.Models
     public class Yemek
     {
 
-        // TODO BOZUK string to Int32
         [FirestoreProperty("adminOnayi")]
         public int adminOnayi { get; set; }
 
