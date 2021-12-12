@@ -59,6 +59,8 @@ namespace YemekTBackend.Services
             Yemek bizimYemek;
             CollectionReference colref = database.Collection("yemekler");
             QuerySnapshot allYemeks = await colref.GetSnapshotAsync();
+            Query istenenYemek = colref.WhereEqualTo("yemekID", idstr);
+            //TODO
             foreach (DocumentSnapshot document in allYemeks.Documents)
             {
                 // Do anything you'd normally do with a DocumentSnapshot
@@ -66,10 +68,46 @@ namespace YemekTBackend.Services
                 veri.Add(_yemekim);
             }
             bizimYemek = veri.FirstOrDefault(yemek => yemek.yemekID == idstr);
-            
+
             return bizimYemek;
 
         }
+
+        public static async Task<ActionResult<Yemek>> putNewYemek(Yemek _yemek)
+        {
+            // TODO gecici obje oluturup onu Yemek'e convert et
+            CollectionReference colref = database.Collection("yemekler");
+            _yemek.adminOnayi = 0;
+            _yemek.begenenler = new List<string>();
+            
+            _yemek.olusturmaTarihi = DateTime.Now.ToString();
+
+            var yeniguid = System.Guid.NewGuid().ToString();
+            _yemek.yemekID = yeniguid;
+            // kullanmaya gerek yok gibi, firebase kendisi unique bir deger atiyor
+
+            await colref.AddAsync(_yemek);
+            return _yemek;
+        }
+        public static async Task<ActionResult<Yemek>> yemekDuzenle(string idstr, int komut)
+        {
+            List<Yemek> veri = new List<Yemek>();
+            Yemek bizimYemek;
+            CollectionReference colref = database.Collection("yemekler");
+            QuerySnapshot allYemeks = await colref.GetSnapshotAsync();
+            foreach (DocumentSnapshot document in allYemeks.Documents)
+            {
+                // Do anything you'd normally do with a DocumentSnapshot
+                Yemek _yemekim = document.ConvertTo<Yemek>();
+                veri.Add(_yemekim);
+            }
+            bizimYemek = veri.FirstOrDefault(yemek => yemek.yemekID == idstr);
+            bizimYemek.adminOnayi = komut;
+            await colref.AddAsync(bizimYemek);
+            return bizimYemek;
+
+        }
+
 
 
         /*
@@ -91,21 +129,6 @@ namespace YemekTBackend.Services
         */
 
 
-        public static async Task<ActionResult<Yemek>> putNewYemek(Yemek _yemek)
-        {
-            // TODO gecici obje oluturup onu Yemek'e convert et
-            CollectionReference colref = database.Collection("yemekler");
-            _yemek.adminOnayi = 0;
-            _yemek.begenenler = new List<string>();
-            _yemek.olusturanID = "0";
-            _yemek.olusturmaTarihi = DateTime.Now.ToString();
 
-            var yeniguid = System.Guid.NewGuid().ToString();
-            _yemek.yemekID = yeniguid;
-            // kullanmaya gerek yok gibi, firebase kendisi unique bir deger atiyor
-
-            await colref.AddAsync(_yemek);
-            return _yemek;
-        }
     }
 }
