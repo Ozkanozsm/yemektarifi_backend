@@ -24,7 +24,13 @@ namespace YemekTBackend.Models
         public List<string> malzemeler { get; set; }
 
         [FirestoreProperty("olusturanID")]
-        public int olusturanID { get; set; }
+        public string olusturanID { get; set; }
+
+        [FirestoreProperty("imageURL")]
+        public string imageURL { get; set; }
+
+        [FirestoreProperty("olusturanUserName")]
+        public string olusturanUserName { get; set; }
 
         [FirestoreProperty("olusturmaTarihi")]
         public string olusturmaTarihi { get; set; }

@@ -20,33 +20,11 @@ namespace YemekTBackend.Services
 
         public static List<Yemek> GetAll() => Yemekler;
 
-        /*
-        // HATA: https://youtu.be/SrRrxYBR3s0?t=385
-        public static async Task<ActionResult<Yemek>> getYemek()
-        {
-            Yemek _yemek;
-            var veri = new Dictionary<string, object>();
-            DocumentReference docref = database.Collection("yemekler").Document("09a24398-d8b6-4f02-ad3b-209fd4aaa8b1");
-            DocumentSnapshot snap = await docref.GetSnapshotAsync();
-            if (snap.Exists)
-            {
-                _yemek = snap.ConvertTo<Yemek>();
-                Dictionary<string, object> dctveri = snap.ToDictionary();
-                foreach (var item in dctveri)
-                {
-                    veri.Add(item.Key, item.Value);
-                }
-                return _yemek;
-            }
-            return new Yemek() { yemekID = 1, yemekIsim = "TEMP YEMEK" };
-        }
-        */
-
 
         public static async Task<ActionResult<Dictionary<string, object>>> getYemek()
         {
             var veri = new Dictionary<string, object>();
-            DocumentReference docref = database.Collection("yemekler").Document("09a24398-d8b6-4f02-ad3b-209fd4aaa8b1");
+            DocumentReference docref = database.Collection("yemekler").Document("0080ec05-3118-4c3b-83a8-a7e1db5959da");
             DocumentSnapshot snap = await docref.GetSnapshotAsync();
             if (snap.Exists)
             {
@@ -75,8 +53,27 @@ namespace YemekTBackend.Services
 
         }
 
+        public static async Task<ActionResult<Yemek>> getYemekwithID(string idstr)
+        {
+            List<Yemek> veri = new List<Yemek>();
+            Yemek bizimYemek;
+            CollectionReference colref = database.Collection("yemekler");
+            QuerySnapshot allYemeks = await colref.GetSnapshotAsync();
+            foreach (DocumentSnapshot document in allYemeks.Documents)
+            {
+                // Do anything you'd normally do with a DocumentSnapshot
+                Yemek _yemekim = document.ConvertTo<Yemek>();
+                veri.Add(_yemekim);
+            }
+            bizimYemek = veri.FirstOrDefault(yemek => yemek.yemekID == idstr);
+            
+            return bizimYemek;
 
-        public static async Task<ActionResult<Yemek>> putNewYemek(Yemek _yemek)
+        }
+
+
+        /*
+        public static async Task<ActionResult<Yemek>> putNewBlob(Google.Cloud.Firestore.Blob veri)
         {
             // TODO gecici obje oluturup onu Yemek'e convert et
             CollectionReference colref = database.Collection("yemekler");
@@ -84,8 +81,27 @@ namespace YemekTBackend.Services
             _yemek.begenenler = new List<string>();
             _yemek.olusturanID = 0;
             _yemek.olusturmaTarihi = DateTime.Now.ToString();
-            
+
             // var yeniguid = System.Guid.NewGuid().ToString();
+            // kullanmaya gerek yok gibi, firebase kendisi unique bir deger atiyor
+
+            await colref.AddAsync(_yemek);
+            return _yemek;
+        }
+        */
+
+
+        public static async Task<ActionResult<Yemek>> putNewYemek(Yemek _yemek)
+        {
+            // TODO gecici obje oluturup onu Yemek'e convert et
+            CollectionReference colref = database.Collection("yemekler");
+            _yemek.adminOnayi = 0;
+            _yemek.begenenler = new List<string>();
+            _yemek.olusturanID = "0";
+            _yemek.olusturmaTarihi = DateTime.Now.ToString();
+
+            var yeniguid = System.Guid.NewGuid().ToString();
+            _yemek.yemekID = yeniguid;
             // kullanmaya gerek yok gibi, firebase kendisi unique bir deger atiyor
 
             await colref.AddAsync(_yemek);

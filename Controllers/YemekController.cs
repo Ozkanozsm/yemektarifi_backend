@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using YemekTBackend.Models;
 using YemekTBackend.Services;
-
+using Google.Cloud.Firestore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,6 +26,12 @@ namespace YemekTBackend.Controllers
             return YemekService.getallYemek();
         }
 
+        [HttpGet("yemekwithid/{yemekid}")]
+        public Task<ActionResult<Yemek>> getYemekwithid(string yemekid)
+        {
+            return YemekService.getYemekwithID(yemekid);
+        }
+
         [HttpPost("ekle")]
         public Task<ActionResult<Yemek>> YemekEkle(Yemek _yemek)
         {
@@ -35,13 +41,9 @@ namespace YemekTBackend.Controllers
 
         }
 
+        
 
 
-        [HttpGet("oldall")]
-        public ActionResult<List<Yemek>> GetAll()
-        {
-            // localde calisiyor
-            return YemekService.GetAll();
-        }
+        
     }
 }
