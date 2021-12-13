@@ -66,9 +66,12 @@ namespace YemekTBackend.Services
                 // Do anything you'd normally do with a DocumentSnapshot
                 Yemek _yemekim = document.ConvertTo<Yemek>();
                 veri.Add(_yemekim);
+                _yemekim.yemekID = idstr;
+                // ise
+
             }
             bizimYemek = veri.FirstOrDefault(yemek => yemek.yemekID == idstr);
-
+            // LINQ
             return bizimYemek;
 
         }
@@ -77,10 +80,12 @@ namespace YemekTBackend.Services
         {
             // TODO gecici obje oluturup onu Yemek'e convert et
             CollectionReference colref = database.Collection("yemekler");
+            
             _yemek.adminOnayi = 0;
             _yemek.begenenler = new List<string>();
-            
+
             _yemek.olusturmaTarihi = DateTime.Now.ToString();
+            //TODO FIREBASE
 
             var yeniguid = System.Guid.NewGuid().ToString();
             _yemek.yemekID = yeniguid;
@@ -89,21 +94,39 @@ namespace YemekTBackend.Services
             await colref.AddAsync(_yemek);
             return _yemek;
         }
+
         public static async Task<ActionResult<Yemek>> yemekDuzenle(string idstr, int komut)
         {
             List<Yemek> veri = new List<Yemek>();
             Yemek bizimYemek;
+            List<DocumentSnapshot> docreflist = new List<DocumentSnapshot>();
+            DocumentReference docref;
             CollectionReference colref = database.Collection("yemekler");
+
             QuerySnapshot allYemeks = await colref.GetSnapshotAsync();
             foreach (DocumentSnapshot document in allYemeks.Documents)
             {
+                docreflist.Add(document);
+               
                 // Do anything you'd normally do with a DocumentSnapshot
                 Yemek _yemekim = document.ConvertTo<Yemek>();
+                if (_yemekim.yemekID == idstr)
+                {
+                    
+                };
+                _yemekim.adminOnayi += 1;
+
+                if (_yemekim.yemekID==idstr)
+                {
+                    docref = document.Reference;
+                    
+                }
                 veri.Add(_yemekim);
             }
+
             bizimYemek = veri.FirstOrDefault(yemek => yemek.yemekID == idstr);
             bizimYemek.adminOnayi = komut;
-            await colref.AddAsync(bizimYemek);
+            //await docref.SetAsync(bizimYemek);
             return bizimYemek;
 
         }
