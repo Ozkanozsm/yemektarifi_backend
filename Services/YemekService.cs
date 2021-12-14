@@ -55,6 +55,31 @@ namespace YemekTBackend.Services
 
         public static async Task<ActionResult<Yemek>> getYemekwithID(string idstr)
         {
+
+            /*
+            Yemek yemekInstance;
+            FieldValue = val;
+            DocumentReference docref;
+            CollectionReference colref = database.Collection("yemekler");
+            QuerySnapshot allYemeks = await colref.GetSnapshotAsync();
+
+            foreach(DocumentSnapshot document in allYemeks.Documents)
+            {
+                val = document.GetValue("yemekID");
+                docref = document.Reference;
+                val = docref.
+                if(docref. == idstr)
+                {
+                    
+                }
+
+            }
+
+            */
+            
+
+
+
             List<Yemek> veri = new List<Yemek>();
             Yemek bizimYemek;
             CollectionReference colref = database.Collection("yemekler");
@@ -97,6 +122,33 @@ namespace YemekTBackend.Services
 
         public static async Task<ActionResult<Yemek>> yemekDuzenle(string idstr, int komut)
         {
+
+            Yemek bizimYemek = new Yemek();
+            DocumentReference docref;
+            CollectionReference colref = database.Collection("yemekler");
+            QuerySnapshot Yemeks = await colref.GetSnapshotAsync();
+
+            foreach (DocumentSnapshot document in Yemeks.Documents)
+            {
+                docref = document.Reference;
+
+                if(docref.Id == idstr)
+                {
+                    Dictionary<FieldPath, object> updates = new Dictionary<FieldPath, object>
+                    {
+                        {new FieldPath("adminOnayi"), komut}
+                    };
+
+
+
+                    await docref.UpdateAsync(updates);
+                } 
+                
+            }
+            return bizimYemek;
+
+
+            /*
             List<Yemek> veri = new List<Yemek>();
             Yemek bizimYemek;
             List<DocumentSnapshot> docreflist = new List<DocumentSnapshot>();
@@ -106,6 +158,8 @@ namespace YemekTBackend.Services
             QuerySnapshot allYemeks = await colref.GetSnapshotAsync();
             foreach (DocumentSnapshot document in allYemeks.Documents)
             {
+
+                Console.WriteLine(document);
                 docreflist.Add(document);
                
                 // Do anything you'd normally do with a DocumentSnapshot
@@ -128,7 +182,33 @@ namespace YemekTBackend.Services
             bizimYemek.adminOnayi = komut;
             //await docref.SetAsync(bizimYemek);
             return bizimYemek;
+            */
+        }
 
+
+        public static async Task<ActionResult<Yemek>> yemekSil(string idstr)
+        {
+            Yemek bizimYemek = new Yemek();
+            DocumentReference docref;
+            CollectionReference colref = database.Collection("yemekler");
+            QuerySnapshot Yemeks = await colref.GetSnapshotAsync();
+
+            foreach (DocumentSnapshot document in Yemeks.Documents)
+            {
+                
+
+                docref = document.Reference;
+
+
+                if(docref.Id == idstr)
+                {
+                    
+                    await docref.DeleteAsync();
+                } 
+                
+            }
+
+            return bizimYemek;
         }
 
 

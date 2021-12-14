@@ -41,7 +41,7 @@ namespace YemekTBackend.Controllers
 
         }
 
-        /*
+        
         [HttpPost("duzenle/{yemekid}/{komut}")]
         public Task<ActionResult<Yemek>> YemekDuzenle(string yemekid, int komut)
         {
@@ -50,7 +50,7 @@ namespace YemekTBackend.Controllers
             return YemekService.yemekDuzenle(yemekid, komut);
 
         }
-        */
+        
 
 
 
