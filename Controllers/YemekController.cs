@@ -41,6 +41,12 @@ namespace YemekTBackend.Controllers
 
         }
 
+        [HttpPost("sil/{yemekid}")]
+        public Task<ActionResult<Yemek>> YemekSil(string yemekid)
+        {
+            return YemekService.yemekSil(yemekid);
+        }
+
         
         [HttpPost("duzenle/{yemekid}/{komut}")]
         public Task<ActionResult<Yemek>> YemekDuzenle(string yemekid, int komut)

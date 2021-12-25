@@ -10,7 +10,7 @@ namespace YemekTBackend.Services
         public static List<Yemek> Yemekler { get; set; }
         static YemekService()
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"Configs/yemektarifi-8bc5d-firebase-adminsdk.json";
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"Config/yemektarifi-8bc5d-firebase-adminsdk.json";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
             database = FirestoreDb.Create("yemektarifi-8bc5d");
             Yemekler = new List<Yemek>();
