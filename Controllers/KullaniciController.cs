@@ -28,9 +28,16 @@ namespace YemekTBackend.Controllers
         }
 
         [HttpPost("begen/{userID}/{recipeID}")]
-        public Task<ActionResult<Kullanici>> LikeRecipe(string UserID, string recipeID)
+        public Task<ActionResult<Kullanici>> LikeRecipe(string userID, string recipeID)
         {
-            return KullaniciService.LikeRecipe(UserID, recipeID);   
+            
+            return KullaniciService.LikeRecipe(userID, recipeID);
+        }
+
+        [HttpGet("begen/{userID}")]
+        public Task<ActionResult<List<Yemek>>> getLikedRecipes(string userID)
+        {
+            return KullaniciService.getLikedRecipes(userID);
         }
     }
     
