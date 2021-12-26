@@ -7,18 +7,15 @@ namespace YemekTBackend.Services
     public class YemekService
     {
         static FirestoreDb database;
-        public static List<Yemek> Yemekler { get; set; }
         static YemekService()
         {
             string path = AppDomain.CurrentDomain.BaseDirectory + @"Config/yemektarifi-8bc5d-firebase-adminsdk.json";
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
             database = FirestoreDb.Create("yemektarifi-8bc5d");
-            Yemekler = new List<Yemek>();
-            Yemekler.Add(new Yemek() { yemekID = "1", yemekIsim = "ÇORBAAA" });
-            Yemekler.Add(new Yemek() { yemekID = "2", yemekIsim = "YEMEQQ" });
+
         }
 
-        public static List<Yemek> GetAll() => Yemekler;
+
 
 
         public static async Task<ActionResult<Dictionary<string, object>>> getYemek()
@@ -55,30 +52,22 @@ namespace YemekTBackend.Services
 
         public static async Task<ActionResult<Yemek>> getYemekwithID(string idstr)
         {
-
             /*
             Yemek yemekInstance;
             FieldValue = val;
             DocumentReference docref;
             CollectionReference colref = database.Collection("yemekler");
             QuerySnapshot allYemeks = await colref.GetSnapshotAsync();
-
-            foreach(DocumentSnapshot document in allYemeks.Documents)
+            foreach (DocumentSnapshot document in allYemeks.Documents)
             {
                 val = document.GetValue("yemekID");
                 docref = document.Reference;
                 val = docref.
-                if(docref. == idstr)
+                if (docref. == idstr)
                 {
-                    
                 }
-
             }
-
             */
-            
-
-
 
             List<Yemek> veri = new List<Yemek>();
             Yemek bizimYemek;
@@ -91,11 +80,12 @@ namespace YemekTBackend.Services
                 // Do anything you'd normally do with a DocumentSnapshot
                 Yemek _yemekim = document.ConvertTo<Yemek>();
                 veri.Add(_yemekim);
-                _yemekim.yemekID = idstr;
-                // ise
+
+
 
             }
             bizimYemek = veri.FirstOrDefault(yemek => yemek.yemekID == idstr);
+
             // LINQ
             return bizimYemek;
 
@@ -105,7 +95,7 @@ namespace YemekTBackend.Services
         {
             // TODO gecici obje oluturup onu Yemek'e convert et
             CollectionReference colref = database.Collection("yemekler");
-            
+
             _yemek.adminOnayi = 0;
             _yemek.begenenler = new List<string>();
 
@@ -132,7 +122,7 @@ namespace YemekTBackend.Services
             {
                 docref = document.Reference;
 
-                if(docref.Id == idstr)
+                if (docref.Id == idstr)
                 {
                     Dictionary<FieldPath, object> updates = new Dictionary<FieldPath, object>
                     {
@@ -142,8 +132,8 @@ namespace YemekTBackend.Services
 
 
                     await docref.UpdateAsync(updates);
-                } 
-                
+                }
+
             }
             return bizimYemek;
 
@@ -195,17 +185,17 @@ namespace YemekTBackend.Services
 
             foreach (DocumentSnapshot document in Yemeks.Documents)
             {
-                
+
 
                 docref = document.Reference;
 
 
-                if(docref.Id == idstr)
+                if (docref.Id == idstr)
                 {
-                    
+
                     await docref.DeleteAsync();
-                } 
-                
+                }
+
             }
 
             return bizimYemek;

@@ -12,10 +12,15 @@ namespace YemekTBackend.Controllers
     public class YemekController : ControllerBase
     {
         [HttpGet("test")]
-        public Task<ActionResult<Dictionary<string, object>>> test()
+        public async Task<ActionResult<Yemek>> test()
         {
-            // firebase'e erisiyor
-            return YemekService.getYemek();
+
+            //Hamburger id: d9ecdd9f-f26d-4f1d-8c8e-91241096afff
+            var _yemek = YemekService.getYemekwithID("d9ecdd9f-a-91241096afff").Result;
+            if (_yemek.Value == null)
+                return NotFound();
+
+            return _yemek;
         }
 
 
@@ -29,8 +34,13 @@ namespace YemekTBackend.Controllers
         [HttpGet("yemekwithid/{yemekid}")]
         public Task<ActionResult<Yemek>> getYemekwithid(string yemekid)
         {
+
+
+            //Yemek _yemek = YemekService.getYemekwithID(yemekid).Result;
             return YemekService.getYemekwithID(yemekid);
         }
+
+
 
         [HttpPost("ekle")]
         public Task<ActionResult<Yemek>> YemekEkle(Yemek _yemek)
@@ -47,7 +57,7 @@ namespace YemekTBackend.Controllers
             return YemekService.yemekSil(yemekid);
         }
 
-        
+
         [HttpPost("duzenle/{yemekid}/{komut}")]
         public Task<ActionResult<Yemek>> YemekDuzenle(string yemekid, int komut)
         {
@@ -56,7 +66,7 @@ namespace YemekTBackend.Controllers
             return YemekService.yemekDuzenle(yemekid, komut);
 
         }
-        
+
 
 
 
