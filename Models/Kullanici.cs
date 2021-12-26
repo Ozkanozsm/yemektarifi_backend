@@ -12,12 +12,6 @@ namespace YemekTBackend.Models
         [FirestoreProperty("userName")]
         public string userName { get; set; }
 
-        [FirestoreProperty("firstName")]
-        public string firstName { get; set; }
-
-        [FirestoreProperty("lastName")]
-        public string lastName { get; set; }
-
         [FirestoreProperty("eMail")]
         public string eMail { get; set; }
 
@@ -28,8 +22,18 @@ namespace YemekTBackend.Models
         public List<string> likedRecipes { get; set; }
 
         [FirestoreProperty("creationDate")]
-        public string creationDate { get; set; }   
-        
+        public string creationDate { get; set; }
+
+        [FirestoreProperty("isAdmin")]
+        public bool isAdmin { get; set; }
+
+        [FirestoreProperty("password")]
+        public string password { get; set; }
+
+        [FirestoreProperty("imageURL")]
+        public string imageURL { get; set; }
+
+
 
 
 
