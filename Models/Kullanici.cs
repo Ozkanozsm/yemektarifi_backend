@@ -27,9 +27,6 @@ namespace YemekTBackend.Models
         [FirestoreProperty("isAdmin")]
         public bool isAdmin { get; set; }
 
-        [FirestoreProperty("password")]
-        public string password { get; set; }
-
         [FirestoreProperty("imageURL")]
         public string imageURL { get; set; }
 

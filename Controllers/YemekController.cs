@@ -57,5 +57,12 @@ namespace YemekTBackend.Controllers
 
             return YemekService.YemekEdit(yemekid, komut);
         }
+
+        [HttpGet("begenenler/{yemekid}")]
+        public Task<ActionResult<List<Kullanici>>> GetLikes(string yemekid)
+        {
+            return YemekService.GetLikes(yemekid);
+        }
+
     }
 }

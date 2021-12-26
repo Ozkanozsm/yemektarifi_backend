@@ -111,5 +111,33 @@ namespace YemekTBackend.Services
             }
             return bizimYemek;
         }
+
+        public static async Task<ActionResult<List<Kullanici>>> GetLikes(string recipeID)
+        {
+            //TRY CATCH EKLE
+            DocumentSnapshot recipe = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
+            List<Kullanici> likes = new List<Kullanici>();
+
+            foreach(string userID in recipe.GetValue<List<string>>("begenenler"))
+            {
+            
+                try
+                {
+                    DocumentSnapshot userSnap = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
+                    Kullanici user = userSnap.ConvertTo<Kullanici>();
+                    likes.Add(user);
+
+                }
+                catch (InvalidOperationException)
+                {
+
+                }
+
+            }
+
+            return likes;
+        }
+
+        
     }
 }

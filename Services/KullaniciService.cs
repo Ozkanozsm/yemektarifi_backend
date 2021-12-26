@@ -50,9 +50,15 @@ namespace YemekTBackend.Services
         {
             CollectionReference colref = database.Collection("kullanicilar");
             DocumentReference docref;
+
+
+
+            
             user.isAdmin = false;
             user.addedRecipes = new List<string>();
             user.likedRecipes = new List<string>();
+
+            
             
             
             docref = await colref.AddAsync(user);
@@ -103,7 +109,7 @@ namespace YemekTBackend.Services
             {
                 try
                 {
-                    DocumentSnapshot recipeSnap = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
+                    DocumentSnapshot recipeSnap = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
                     Yemek recipe = recipeSnap.ConvertTo<Yemek>();
                     likedRecipes.Add(recipe);
 
@@ -116,6 +122,48 @@ namespace YemekTBackend.Services
             }
 
             return likedRecipes;
+        }
+        public static async Task<ActionResult<List<Yemek>>> getAddedRecipes(string userID)
+        {
+            //try catch
+            DocumentSnapshot user = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
+
+            List<Yemek> addedRecipes = new List<Yemek>();
+            foreach (string recipeID in user.GetValue<List<string>>("addedRecipes"))
+            {
+                try
+                {
+                    DocumentSnapshot recipeSnap = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
+                    Yemek recipe = recipeSnap.ConvertTo<Yemek>();
+                    addedRecipes.Add(recipe);
+
+                }
+                catch (InvalidOperationException)
+                {
+
+                }
+
+            }
+
+            return addedRecipes;
+        }
+
+        public static async Task<bool> checkIsAlreadyIn(Kullanici user)
+        {
+            QuerySnapshot colSnap = await database.Collection("kullanicilar").GetSnapshotAsync();
+
+            string eMail = user.eMail;
+
+            foreach(DocumentSnapshot docsnap in colSnap)
+            {
+                if (docsnap.GetValue<string>("eMail").Equals(eMail))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
         }
     }
 }

@@ -24,6 +24,12 @@ namespace YemekTBackend.Controllers
         [HttpPost("ekle")]
         public Task<ActionResult<Kullanici>> CreateUser(Kullanici user)
         {
+
+            if (KullaniciService.checkIsAlreadyIn(user).Result)
+            {
+                return null;
+            }
+            
             return KullaniciService.CreateUser(user);
         }
 
@@ -39,7 +45,14 @@ namespace YemekTBackend.Controllers
         {
             return KullaniciService.getLikedRecipes(userID);
         }
+
+        [HttpGet("added/{userID}")]
+        public Task<ActionResult<List<Yemek>>> getAddedRecipes(string userID)
+        {
+            return KullaniciService.getAddedRecipes(userID);
+        }
+
     }
-    
-    
+
+
 }
