@@ -12,67 +12,50 @@ namespace YemekTBackend.Controllers
     public class YemekController : ControllerBase
     {
         [HttpGet("test")]
-        public async Task<ActionResult<Yemek>> test()
+        public async Task<ActionResult<Yemek>> Test()
         {
-
-            //Hamburger id: d9ecdd9f-f26d-4f1d-8c8e-91241096afff
-            var _yemek = YemekService.getYemekwithID("d9ecdd9f-a-91241096afff").Result;
-            if (_yemek.Value == null)
-                return NotFound();
-
-            return _yemek;
+            // TEST FUNCTION
+            return NotFound();
         }
 
-
         [HttpGet("all")]
-        public Task<ActionResult<List<Yemek>>> getallyemek()
+        public Task<ActionResult<List<Yemek>>> GetAllYemek()
         {
             // firebase'e erisiyor
-            return YemekService.getallYemek();
+            return YemekService.GetAllYemek();
         }
 
         [HttpGet("yemekwithid/{yemekid}")]
-        public async Task<ActionResult<Yemek>> getYemekwithid(string yemekid)
+        public async Task<ActionResult<Yemek>> GetYemekwithid(string yemekid)
         {
-            var _yemek = YemekService.getYemekwithID(yemekid).Result;
+            var _yemek = YemekService.GetYemekwithID(yemekid).Result;
             if (_yemek.Value == null)
             {
                 return NotFound();
             }
-                        
             return _yemek;
         }
-
-
 
         [HttpPost("ekle")]
         public Task<ActionResult<Yemek>> YemekEkle(Yemek _yemek)
         {
             // CONTROLLERI BURADA YAP
 
-            return YemekService.putNewYemek(_yemek);
-
+            return YemekService.PutNewYemek(_yemek);
         }
 
         [HttpPost("sil/{yemekid}")]
         public Task<ActionResult<Yemek>> YemekSil(string yemekid)
         {
-            return YemekService.yemekSil(yemekid);
+            return YemekService.DeleteYemek(yemekid);
         }
-
 
         [HttpPost("duzenle/{yemekid}/{komut}")]
         public Task<ActionResult<Yemek>> YemekDuzenle(string yemekid, int komut)
         {
             // CONTROLLERI BURADA YAP
 
-            return YemekService.yemekDuzenle(yemekid, komut);
-
+            return YemekService.YemekEdit(yemekid, komut);
         }
-
-
-
-
-
     }
 }
