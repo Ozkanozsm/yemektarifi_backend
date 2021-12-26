@@ -48,22 +48,15 @@ namespace YemekTBackend.Services
 
         public static async Task<ActionResult<Kullanici>> CreateUser(Kullanici user)
         {
-            CollectionReference colref = database.Collection("kullanicilar");
-            DocumentReference docref;
-
-
-
             
+            DocumentReference docref = database.Collection("kullanicilar").Document(user.userID);
+
             user.isAdmin = false;
             user.addedRecipes = new List<string>();
             user.likedRecipes = new List<string>();
 
-            
-            
-            
-            docref = await colref.AddAsync(user);
 
-            FirebaseService.MatchIDs(docref);
+            await docref.SetAsync(user);
 
             return user;
 
