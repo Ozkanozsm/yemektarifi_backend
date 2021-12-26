@@ -32,12 +32,15 @@ namespace YemekTBackend.Controllers
         }
 
         [HttpGet("yemekwithid/{yemekid}")]
-        public Task<ActionResult<Yemek>> getYemekwithid(string yemekid)
+        public async Task<ActionResult<Yemek>> getYemekwithid(string yemekid)
         {
-
-
-            //Yemek _yemek = YemekService.getYemekwithID(yemekid).Result;
-            return YemekService.getYemekwithID(yemekid);
+            var _yemek = YemekService.getYemekwithID(yemekid).Result;
+            if (_yemek.Value == null)
+            {
+                return NotFound();
+            }
+                        
+            return _yemek;
         }
 
 
