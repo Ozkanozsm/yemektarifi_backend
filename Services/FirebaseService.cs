@@ -15,5 +15,15 @@ namespace YemekTBackend.Services
 
             await docref.UpdateAsync(update);
         }
+
+        public static async void MatchYemekIDs(DocumentReference docref)
+        {
+            Dictionary<FieldPath, object> update = new Dictionary<FieldPath, object>
+            {
+                {new FieldPath("yemekID"), docref.Id }
+            };
+
+            await docref.UpdateAsync(update);
+        }
     }
 }

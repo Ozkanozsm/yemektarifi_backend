@@ -61,14 +61,15 @@ namespace YemekTBackend.Services
 
         public static async Task<ActionResult<Yemek>> PutNewYemek(Yemek _yemek)
         {
+            DocumentReference docref;
             CollectionReference colref = database.Collection("yemekler");
+            var yeniguid = Guid.NewGuid().ToString();
             _yemek.adminOnayi = 0;
             _yemek.begenenler = new List<string>();
             _yemek.olusturmaTarihi = DateTime.Now.ToString();
-            //TODO FIREBASE
-            var yeniguid = System.Guid.NewGuid().ToString();
             _yemek.yemekID = yeniguid;
-            await colref.AddAsync(_yemek);
+            docref = await colref.AddAsync(_yemek);
+            FirebaseService.MatchYemekIDs(docref);
             return _yemek;
         }
 

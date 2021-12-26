@@ -54,7 +54,7 @@ namespace YemekTBackend.Services
             user.addedRecipes = new List<string>();
             user.likedRecipes = new List<string>();
             
-            //TODO match firebase id and user id
+            
             docref = await colref.AddAsync(user);
 
             FirebaseService.MatchIDs(docref);
