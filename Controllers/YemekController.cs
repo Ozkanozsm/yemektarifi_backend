@@ -65,22 +65,24 @@ namespace YemekTBackend.Controllers
             if (YemekService.checkRecipeIDIsExist(yemekid).Result)
             {
                 await YemekService.YemekEdit(yemekid, komut);
-
                 if (YemekService.GetRecipesAdminOnayi(yemekid).Result == komut)
                 {
                     return StatusCode(200);
                 }
-
                 return StatusCode(503);
-
             }
             return NotFound();
-
-
-
-
-
         }
+
+
+        [HttpPost("duzenleAdmin")]
+        public async Task<ActionResult<Yemek>> YemekDuzenleAdmin(YemekAdmin yemek)
+        {
+            await YemekService.YemekAdminDuzenle(yemek);
+            return Ok();
+        }
+
+
 
         [HttpGet("begenenler/{yemekid}")]
         public Task<ActionResult<List<Kullanici>>> GetLikes(string yemekid)
@@ -88,7 +90,7 @@ namespace YemekTBackend.Controllers
             return YemekService.GetLikes(yemekid);
         }
 
-        
+
 
     }
 }
