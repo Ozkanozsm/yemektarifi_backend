@@ -61,6 +61,7 @@ namespace YemekTBackend.Services
 
         public static async Task<ActionResult<Yemek>> PutNewYemek(Yemek _yemek)
         {
+            /*
             DocumentReference docref;
             CollectionReference colref = database.Collection("yemekler");
             var yeniguid = Guid.NewGuid().ToString();
@@ -70,7 +71,22 @@ namespace YemekTBackend.Services
             _yemek.yemekID = yeniguid;
             docref = await colref.AddAsync(_yemek);
             FirebaseService.MatchYemekIDs(docref);
+            return _yemek;*/
+
+            _yemek.yemekID = Guid.NewGuid().ToString();
+            _yemek.adminOnayi = 0;
+            _yemek.begenenler = new List<string>();
+            _yemek.olusturmaTarihi = DateTime.Now.ToString();
+
+            DocumentReference docref = database.Collection("yemekler").Document(_yemek.yemekID);
+            await docref.SetAsync(_yemek);
+
+            //kullanıcının eklediği yemeklere yemeği ekleme
+            KullaniciService.AddUserAddedList(_yemek.olusturanID, _yemek.yemekID);
+
+
             return _yemek;
+
         }
 
         public static async Task<ActionResult<Yemek>> YemekEdit(string idstr, int komut)
@@ -138,6 +154,30 @@ namespace YemekTBackend.Services
             return likes;
         }
 
-        
+        public static async Task<bool> checkRecipeIDIsExist(string recipeID)
+        {
+            DocumentSnapshot docSnap = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
+            if (docSnap.Exists)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static async Task<int> GetRecipesAdminOnayi(string recipeID)
+        {
+            DocumentSnapshot docSnap = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
+            return docSnap.GetValue<int>("adminOnayi");
+
+        }
+
+        public static async Task<int> GetRecipesLikeCount(string recipeID)
+        {
+            DocumentSnapshot docSnap = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
+            return docSnap.GetValue<List<string>>("begenenler").Count;
+        }
+
+
+
     }
 }

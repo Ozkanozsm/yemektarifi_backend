@@ -62,9 +62,9 @@ namespace YemekTBackend.Services
 
         }
 
-        public static async Task<ActionResult<Kullanici>> LikeRecipe(string userID, string recipeID)
+        public static async Task<ActionResult<Kullanici>> LikeRecipe(string userID, string recipeID, bool komut)
         {
-            //TRY CATCH EKLE invalidoperationsexception
+
             DocumentSnapshot user = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
             DocumentSnapshot recipe = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
 
@@ -72,10 +72,22 @@ namespace YemekTBackend.Services
             //kullanıcının beğenilerine tarifi ekle
 
             List<string> newLikedList = user.GetValue<List<string>>("likedRecipes");
-            newLikedList.Add(recipeID);
-
             List<string> newBegenenlerList = recipe.GetValue<List<string>>("begenenler");
-            newBegenenlerList.Add(userID);
+
+
+            if(komut)
+            {
+                newLikedList.Add(recipeID);
+                newBegenenlerList.Add(userID);
+
+            }
+            else
+            {
+                newLikedList.Remove(recipeID);
+                newBegenenlerList.Remove(userID);
+
+            }
+            
 
             await user.Reference.UpdateAsync(new Dictionary<FieldPath, object>
             {
@@ -94,7 +106,7 @@ namespace YemekTBackend.Services
 
         public static async Task<ActionResult<List<Yemek>>> getLikedRecipes(string userID)
         {
-            //try catch
+            
             DocumentSnapshot user = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
             
             List<Yemek> likedRecipes = new List<Yemek>();
@@ -159,7 +171,7 @@ namespace YemekTBackend.Services
 
         }
 
-        public static async Task<bool> checkUserIDIsExist(string userID)
+        public static async Task<bool> CheckUserIDIsExist(string userID)
         {
             DocumentSnapshot docSnap = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
             if (docSnap.Exists)
@@ -168,5 +180,35 @@ namespace YemekTBackend.Services
             }
             return false;
         }
+
+        public static async void AddUserAddedList(string userID, string recipeID)
+        {
+            DocumentSnapshot user = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
+
+            List<string> newAddedList = user.GetValue<List<string>>("addedRecipes");
+            newAddedList.Add(recipeID);
+
+            await user.Reference.UpdateAsync(new Dictionary<FieldPath, object>
+            {
+                {new FieldPath("addedRecipes"), newAddedList}
+            });
+
+            return;
+        }
+
+        public static async Task<bool> IsUserLikedRecipe(string userID, string recipeID)
+        {
+            DocumentSnapshot user = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
+            List<string> likedList = user.GetValue<List<string>>("likedRecipes");
+
+            if (likedList.Contains(recipeID))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        
     }
 }
+

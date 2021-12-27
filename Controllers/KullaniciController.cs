@@ -18,7 +18,7 @@ namespace YemekTBackend.Controllers
         [HttpGet("kullaniciwithid/{userID}")]
         public async Task<ActionResult<Kullanici>> getKullaniciWithID(string userID)
         {
-            if (KullaniciService.checkUserIDIsExist(userID).Result)
+            if (KullaniciService.CheckUserIDIsExist(userID).Result)
             {
                 return await KullaniciService.getKullaniciWithID(userID);
             }
@@ -40,27 +40,43 @@ namespace YemekTBackend.Controllers
         }
 
 
-        [HttpPost("begen/{userID}/{recipeID}")]
-        public Task<ActionResult<Kullanici>> LikeRecipe(string userID, string recipeID)
+        [HttpPost("begen/{userID}/{recipeID}/{komut}")]
+        public async Task<ActionResult<int>> LikeRecipe(string userID, string recipeID, bool komut)
         {
-            
-            return KullaniciService.LikeRecipe(userID, recipeID);
+            if(KullaniciService.CheckUserIDIsExist(userID).Result && YemekService.checkRecipeIDIsExist(recipeID).Result)
+            {
+                //kullanıcı yemeği beğendiyse ve komut sil komutu ise
+                //kullanıcı yemeği beğenmediyse ve komut ekle komutu ise
+                if (KullaniciService.IsUserLikedRecipe(userID, recipeID).Result != komut)
+                {
+                    await KullaniciService.LikeRecipe(userID, recipeID, komut);
+                    return YemekService.GetRecipesLikeCount(recipeID).Result;
+                }
+
+                return StatusCode(409);
+               
+            }
+            return NotFound();
+
         }
 
         [HttpGet("begen/{userID}")]
         public async Task<ActionResult<List<Yemek>>> getLikedRecipes(string userID)
         {
-            if (KullaniciService.checkUserIDIsExist(userID).Result)
+            
+            if (KullaniciService.CheckUserIDIsExist(userID).Result)
             {
                 return await KullaniciService.getLikedRecipes(userID);
             }
             return StatusCode(404);//notfound
+            
+            //return await KullaniciService.getLikedRecipes(userID);
         }
 
         [HttpGet("added/{userID}")]
         public async Task<ActionResult<List<Yemek>>> getAddedRecipes(string userID)
         {
-            if (KullaniciService.checkUserIDIsExist(userID).Result)
+            if (KullaniciService.CheckUserIDIsExist(userID).Result)
             {
                 return await KullaniciService.getAddedRecipes(userID);
             }

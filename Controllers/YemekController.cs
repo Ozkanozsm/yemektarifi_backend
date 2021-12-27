@@ -37,25 +37,49 @@ namespace YemekTBackend.Controllers
         }
 
         [HttpPost("ekle")]
-        public Task<ActionResult<Yemek>> YemekEkle(Yemek _yemek)
+        public async Task<ActionResult<Yemek>> YemekEkle(Yemek _yemek)
         {
             // CONTROLLERI BURADA YAP
+            if (KullaniciService.CheckUserIDIsExist(_yemek.olusturanID).Result)
+            {
+                return await YemekService.PutNewYemek(_yemek);
+            }
 
-            return YemekService.PutNewYemek(_yemek);
+            return NotFound();  
         }
 
         [HttpPost("sil/{yemekid}")]
-        public Task<ActionResult<Yemek>> YemekSil(string yemekid)
+        public async Task<ActionResult<Yemek>> YemekSil(string yemekid)
         {
-            return YemekService.DeleteYemek(yemekid);
+            if (YemekService.checkRecipeIDIsExist(yemekid).Result)
+            {
+                return await YemekService.DeleteYemek(yemekid);
+            }
+
+            return NotFound();
         }
 
         [HttpPost("duzenle/{yemekid}/{komut}")]
-        public Task<ActionResult<Yemek>> YemekDuzenle(string yemekid, int komut)
+        public async Task<ActionResult<Yemek>> YemekDuzenle(string yemekid, int komut)
         {
-            // CONTROLLERI BURADA YAP
+            if (YemekService.checkRecipeIDIsExist(yemekid).Result)
+            {
+                await YemekService.YemekEdit(yemekid, komut);
 
-            return YemekService.YemekEdit(yemekid, komut);
+                if(YemekService.GetRecipesAdminOnayi(yemekid).Result == komut)
+                {
+                    return StatusCode(200);
+                }
+
+                return StatusCode(503);
+
+            }
+            return NotFound();
+            
+
+            
+
+            
         }
 
         [HttpGet("begenenler/{yemekid}")]
