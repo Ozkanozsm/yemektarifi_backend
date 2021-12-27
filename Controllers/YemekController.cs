@@ -37,7 +37,7 @@ namespace YemekTBackend.Controllers
         }
 
         [HttpPost("ekle")]
-        public async Task<ActionResult<Yemek>> YemekEkle(Yemek _yemek)
+        public async Task<ActionResult<Yemek>> YemekEkle(YemekData _yemek)
         {
             // CONTROLLERI BURADA YAP
             if (KullaniciService.CheckUserIDIsExist(_yemek.olusturanID).Result)
@@ -45,7 +45,7 @@ namespace YemekTBackend.Controllers
                 return await YemekService.PutNewYemek(_yemek);
             }
 
-            return NotFound();  
+            return NotFound();
         }
 
         [HttpPost("sil/{yemekid}")]
@@ -66,7 +66,7 @@ namespace YemekTBackend.Controllers
             {
                 await YemekService.YemekEdit(yemekid, komut);
 
-                if(YemekService.GetRecipesAdminOnayi(yemekid).Result == komut)
+                if (YemekService.GetRecipesAdminOnayi(yemekid).Result == komut)
                 {
                     return StatusCode(200);
                 }
@@ -75,11 +75,11 @@ namespace YemekTBackend.Controllers
 
             }
             return NotFound();
-            
 
-            
 
-            
+
+
+
         }
 
         [HttpGet("begenenler/{yemekid}")]

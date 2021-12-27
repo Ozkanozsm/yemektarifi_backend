@@ -33,7 +33,7 @@ namespace YemekTBackend.Models
         public string olusturanUserName { get; set; }
 
         [FirestoreProperty("olusturmaTarihi")]
-        public string olusturmaTarihi { get; set; }
+        public DateTime olusturmaTarihi { get; set; }
 
         [FirestoreProperty("yemekID")]
         public string yemekID { get; set; }

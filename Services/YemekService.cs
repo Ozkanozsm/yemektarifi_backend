@@ -59,33 +59,32 @@ namespace YemekTBackend.Services
             return bizimYemek;
         }
 
-        public static async Task<ActionResult<Yemek>> PutNewYemek(Yemek _yemek)
+        public static async Task<ActionResult<Yemek>> PutNewYemek(YemekData _yemek)
         {
-            /*
-            DocumentReference docref;
-            CollectionReference colref = database.Collection("yemekler");
-            var yeniguid = Guid.NewGuid().ToString();
-            _yemek.adminOnayi = 0;
-            _yemek.begenenler = new List<string>();
-            _yemek.olusturmaTarihi = DateTime.Now.ToString();
-            _yemek.yemekID = yeniguid;
-            docref = await colref.AddAsync(_yemek);
-            FirebaseService.MatchYemekIDs(docref);
-            return _yemek;*/
+            Yemek yeniYemek = new Yemek();
 
-            _yemek.yemekID = Guid.NewGuid().ToString();
-            _yemek.adminOnayi = 0;
-            _yemek.begenenler = new List<string>();
-            _yemek.olusturmaTarihi = DateTime.Now.ToString();
+            yeniYemek.hazirlanmaSuresi = _yemek.hazirlanmaSuresi;
+            yeniYemek.kategori = _yemek.kategori;
+            yeniYemek.malzemeler = _yemek.malzemeler;
+            yeniYemek.olusturanID = _yemek.olusturanID;
+            yeniYemek.imageURL = _yemek.imageURL;
+            yeniYemek.olusturanUserName = _yemek.olusturanUserName;
+            yeniYemek.yemekIsim = _yemek.yemekIsim;
+            yeniYemek.yemekTarif = _yemek.yemekTarif;
 
-            DocumentReference docref = database.Collection("yemekler").Document(_yemek.yemekID);
-            await docref.SetAsync(_yemek);
+            yeniYemek.yemekID = Guid.NewGuid().ToString();
+            yeniYemek.adminOnayi = 0;
+            yeniYemek.begenenler = new List<string>();
+            yeniYemek.olusturmaTarihi = DateTime.Now.ToUniversalTime();
+
+            DocumentReference docref = database.Collection("yemekler").Document(yeniYemek.yemekID);
+            await docref.SetAsync(yeniYemek);
 
             //kullanıcının eklediği yemeklere yemeği ekleme
-            KullaniciService.AddUserAddedList(_yemek.olusturanID, _yemek.yemekID);
+            KullaniciService.AddUserAddedList(yeniYemek.olusturanID, yeniYemek.yemekID);
 
 
-            return _yemek;
+            return yeniYemek;
 
         }
 
@@ -134,9 +133,9 @@ namespace YemekTBackend.Services
             DocumentSnapshot recipe = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
             List<Kullanici> likes = new List<Kullanici>();
 
-            foreach(string userID in recipe.GetValue<List<string>>("begenenler"))
+            foreach (string userID in recipe.GetValue<List<string>>("begenenler"))
             {
-            
+
                 try
                 {
                     DocumentSnapshot userSnap = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
