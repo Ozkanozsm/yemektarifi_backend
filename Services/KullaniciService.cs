@@ -54,7 +54,7 @@ namespace YemekTBackend.Services
             user.isAdmin = false;
             user.addedRecipes = new List<string>();
             user.likedRecipes = new List<string>();
-
+            user.creationDate = DateTime.Now.ToString();
 
             await docref.SetAsync(user);
 
