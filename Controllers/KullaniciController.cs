@@ -16,22 +16,29 @@ namespace YemekTBackend.Controllers
         }
 
         [HttpGet("kullaniciwithid/{userID}")]
-        public Task<ActionResult<Kullanici>> getKullaniciWithID(string userID)
+        public async Task<ActionResult<Kullanici>> getKullaniciWithID(string userID)
         {
-            return KullaniciService.getKullaniciWithID(userID);
+            if (KullaniciService.checkUserIDIsExist(userID).Result)
+            {
+                return await KullaniciService.getKullaniciWithID(userID);
+            }
+
+            return StatusCode(404);//not found
+            
         }
 
         [HttpPost("ekle")]
-        public Task<ActionResult<Kullanici>> CreateUser(Kullanici user)
+        public async Task<ActionResult<Kullanici>> CreateUser(Kullanici user)
         {
 
-            if (KullaniciService.checkIsAlreadyIn(user).Result)
+            if (!KullaniciService.checkIsAlreadyIn(user).Result)
             {
-                return null;
+                return await KullaniciService.CreateUser(user);
             }
             
-            return KullaniciService.CreateUser(user);
+            return StatusCode(409);//conflict
         }
+
 
         [HttpPost("begen/{userID}/{recipeID}")]
         public Task<ActionResult<Kullanici>> LikeRecipe(string userID, string recipeID)
@@ -41,15 +48,23 @@ namespace YemekTBackend.Controllers
         }
 
         [HttpGet("begen/{userID}")]
-        public Task<ActionResult<List<Yemek>>> getLikedRecipes(string userID)
+        public async Task<ActionResult<List<Yemek>>> getLikedRecipes(string userID)
         {
-            return KullaniciService.getLikedRecipes(userID);
+            if (KullaniciService.checkUserIDIsExist(userID).Result)
+            {
+                return await KullaniciService.getLikedRecipes(userID);
+            }
+            return StatusCode(404);//notfound
         }
 
         [HttpGet("added/{userID}")]
-        public Task<ActionResult<List<Yemek>>> getAddedRecipes(string userID)
+        public async Task<ActionResult<List<Yemek>>> getAddedRecipes(string userID)
         {
-            return KullaniciService.getAddedRecipes(userID);
+            if (KullaniciService.checkUserIDIsExist(userID).Result)
+            {
+                return await KullaniciService.getAddedRecipes(userID);
+            }
+            return StatusCode(404);//notfound
         }
 
     }

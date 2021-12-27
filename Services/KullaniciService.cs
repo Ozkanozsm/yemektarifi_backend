@@ -158,5 +158,15 @@ namespace YemekTBackend.Services
             return false;
 
         }
+
+        public static async Task<bool> checkUserIDIsExist(string userID)
+        {
+            DocumentSnapshot docSnap = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
+            if (docSnap.Exists)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
