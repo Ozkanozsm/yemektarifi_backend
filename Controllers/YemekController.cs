@@ -53,7 +53,8 @@ namespace YemekTBackend.Controllers
         {
             if (YemekService.checkRecipeIDIsExist(yemekid).Result)
             {
-                return await YemekService.DeleteYemek(yemekid);
+                await YemekService.DeleteYemek(yemekid);
+                return StatusCode(200);
             }
 
             return NotFound();

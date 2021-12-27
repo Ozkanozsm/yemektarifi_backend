@@ -153,6 +153,21 @@ namespace YemekTBackend.Services
             return addedRecipes;
         }
 
+        public static async Task<ActionResult<Kullanici>> UpdateUser(KullaniciUpdate user, string userID)
+        {
+            DocumentSnapshot docSnap = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
+            DocumentReference docref = docSnap.Reference;
+
+            Dictionary<FieldPath, object> updates = new()
+            {
+                { new FieldPath("userName"), user.userName },
+                { new FieldPath("imageURL"), user.imageURL }
+            };
+
+            await docref.UpdateAsync(updates);
+            return docSnap.ConvertTo<Kullanici>();
+        }
+
         public static async Task<bool> checkIsAlreadyIn(Kullanici user)
         {
             QuerySnapshot colSnap = await database.Collection("kullanicilar").GetSnapshotAsync();

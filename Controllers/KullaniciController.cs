@@ -83,6 +83,13 @@ namespace YemekTBackend.Controllers
             return StatusCode(404);//notfound
         }
 
+        [HttpPost("update/{userID}")]
+
+        public async Task<ActionResult<Kullanici>> UpdateUser(KullaniciUpdate user, string userID)
+        {
+            return await KullaniciService.UpdateUser(user, userID);
+        }
+
         
 
     }

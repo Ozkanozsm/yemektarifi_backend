@@ -128,8 +128,9 @@ namespace YemekTBackend.Services
             return bizimYemek;
         }
 
-        public static async Task<ActionResult<Yemek>> DeleteYemek(string idstr)
+        public static async Task<int> DeleteYemek(string recipeID)
         {
+            /*
             Yemek bizimYemek = new();
             DocumentReference docref;
             CollectionReference colref = database.Collection("yemekler");
@@ -144,6 +145,12 @@ namespace YemekTBackend.Services
                 }
             }
             return bizimYemek;
+            */
+
+            DocumentReference docref = database.Collection("yemekler").Document(recipeID);
+            DeleteRecipeFromAllUsers(recipeID);
+            await docref.DeleteAsync();
+            return 0;
         }
 
         public static async Task<ActionResult<List<Kullanici>>> GetLikes(string recipeID)
@@ -194,6 +201,36 @@ namespace YemekTBackend.Services
             DocumentSnapshot docSnap = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
             return docSnap.GetValue<List<string>>("begenenler").Count;
         }
+
+        public static async void DeleteRecipeFromAllUsers(string recipeID)
+        {
+            QuerySnapshot querySnap = await database.Collection("kullanicilar").GetSnapshotAsync();
+            
+            foreach(DocumentSnapshot docSnap in querySnap)
+            {
+                if (docSnap.GetValue<List<string>>("likedRecipes").Contains(recipeID)){
+                    List<string> newLikedList = docSnap.GetValue<List<string>>("likedRecipes");
+                    newLikedList.Remove(recipeID);
+
+                    await docSnap.Reference.UpdateAsync(new Dictionary<FieldPath, object>
+                    {
+                        {new FieldPath("likedRecipes"), newLikedList }
+                    });
+                }
+
+                if (docSnap.GetValue<List<string>>("addedRecipes").Contains(recipeID))
+                {
+                    List<string> newAddedList = docSnap.GetValue<List<string>>("addedRecipes");
+                    newAddedList.Remove(recipeID);
+
+                    await docSnap.Reference.UpdateAsync(new Dictionary<FieldPath, object>
+                    {
+                        {new FieldPath("addedRecipes"), newAddedList }
+
+                    });
+                }
+            }
+        }  
 
 
 
