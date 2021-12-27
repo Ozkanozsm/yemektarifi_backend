@@ -14,6 +14,6 @@ namespace YemekTBackend.Models
         public string olusturanUserName { get; set; }
         public string yemekIsim { get; set; }
         public string yemekTarif { get; set; }
-        public string yemekTempTarih { get; set; }
+        public string olusturmaTarihi { get; set; }
     }
 }
