@@ -14,22 +14,6 @@ namespace YemekTBackend.Services
             database = FirestoreDb.Create("yemektarifi-8bc5d");
         }
 
-        public static async Task<ActionResult<Dictionary<string, object>>> GetYemek()
-        {
-            var veri = new Dictionary<string, object>();
-            DocumentReference docref = database.Collection("yemekler").Document("0080ec05-3118-4c3b-83a8-a7e1db5959da");
-            DocumentSnapshot snap = await docref.GetSnapshotAsync();
-            if (snap.Exists)
-            {
-                Dictionary<string, object> dctveri = snap.ToDictionary();
-                foreach (var item in dctveri)
-                {
-                    veri.Add(item.Key, item.Value);
-                }
-            }
-            return veri;
-        }
-
         public static async Task<ActionResult<List<Yemek>>> GetAllYemek()
         {
             List<Yemek> veri = new();
@@ -61,8 +45,8 @@ namespace YemekTBackend.Services
 
         public static async Task<ActionResult<Yemek>> PutNewYemek(YemekData _yemek)
         {
-            Yemek yeniYemek = new Yemek();
-
+            Yemek yeniYemek = new();
+            // eklenecek yemeğin verilerini düzenleme ve yenileme
             yeniYemek.hazirlanmaSuresi = _yemek.hazirlanmaSuresi;
             yeniYemek.kategori = _yemek.kategori;
             yeniYemek.malzemeler = _yemek.malzemeler;
@@ -71,27 +55,20 @@ namespace YemekTBackend.Services
             yeniYemek.olusturanUserName = _yemek.olusturanUserName;
             yeniYemek.yemekIsim = _yemek.yemekIsim;
             yeniYemek.yemekTarif = _yemek.yemekTarif;
-
             yeniYemek.yemekID = Guid.NewGuid().ToString();
             yeniYemek.adminOnayi = 0;
             yeniYemek.begenenler = new List<string>();
             yeniYemek.olusturmaTarihi = DateTime.Now.ToUniversalTime();
-
             DocumentReference docref = database.Collection("yemekler").Document(yeniYemek.yemekID);
             await docref.SetAsync(yeniYemek);
-
             //kullanıcının eklediği yemeklere yemeği ekleme
             KullaniciService.AddUserAddedList(yeniYemek.olusturanID, yeniYemek.yemekID);
-
-
             return yeniYemek;
-
         }
 
         public static async Task<int> YemekDuzenleAdmin(YemekAdmin yemek)
         {
             var gelenid = yemek.yemekID;
-
             DocumentSnapshot docsnap = await database.Collection("yemekler").Document(gelenid).GetSnapshotAsync();
             DocumentReference docref = docsnap.Reference;
             Dictionary<FieldPath, object> updates = new()
@@ -109,11 +86,11 @@ namespace YemekTBackend.Services
         public static async Task<int> YemekDuzenleKullanici(YemekAdmin yemek)
         {
             var gelenid = yemek.yemekID;
-
             DocumentSnapshot docsnap = await database.Collection("yemekler").Document(gelenid).GetSnapshotAsync();
             DocumentReference docref = docsnap.Reference;
             Dictionary<FieldPath, object> updates = new()
             {
+                { new FieldPath("adminOnayi"), 0 },
                 { new FieldPath("hazirlanmaSuresi"), yemek.hazirlanmaSuresi },
                 { new FieldPath("kategori"), yemek.kategori },
                 { new FieldPath("malzemeler"), yemek.malzemeler },
@@ -147,24 +124,8 @@ namespace YemekTBackend.Services
 
         public static async Task<int> DeleteYemek(string recipeID)
         {
-            /*
-            Yemek bizimYemek = new();
-            DocumentReference docref;
-            CollectionReference colref = database.Collection("yemekler");
-            QuerySnapshot Yemeks = await colref.GetSnapshotAsync();
-            foreach (DocumentSnapshot document in Yemeks.Documents)
-            {
-                docref = document.Reference;
-
-                if (docref.Id == idstr)
-                {
-                    await docref.DeleteAsync();
-                }
-            }
-            return bizimYemek;
-            */
-
             DocumentReference docref = database.Collection("yemekler").Document(recipeID);
+            // ilgili yemeği tüm kullanıcılardan silme
             DeleteRecipeFromAllUsers(recipeID);
             await docref.DeleteAsync();
             return 0;
@@ -172,31 +133,24 @@ namespace YemekTBackend.Services
 
         public static async Task<ActionResult<List<Kullanici>>> GetLikes(string recipeID)
         {
-            //TRY CATCH EKLE
             DocumentSnapshot recipe = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
-            List<Kullanici> likes = new List<Kullanici>();
-
+            List<Kullanici> likes = new();
             foreach (string userID in recipe.GetValue<List<string>>("begenenler"))
             {
-
                 try
                 {
                     DocumentSnapshot userSnap = await database.Collection("kullanicilar").Document(userID).GetSnapshotAsync();
                     Kullanici user = userSnap.ConvertTo<Kullanici>();
                     likes.Add(user);
-
                 }
                 catch (InvalidOperationException)
                 {
-
                 }
-
             }
-
             return likes;
         }
 
-        public static async Task<bool> checkRecipeIDIsExist(string recipeID)
+        public static async Task<bool> CheckRecipeIDIsExist(string recipeID)
         {
             DocumentSnapshot docSnap = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
             if (docSnap.Exists)
@@ -210,7 +164,6 @@ namespace YemekTBackend.Services
         {
             DocumentSnapshot docSnap = await database.Collection("yemekler").Document(recipeID).GetSnapshotAsync();
             return docSnap.GetValue<int>("adminOnayi");
-
         }
 
         public static async Task<int> GetRecipesLikeCount(string recipeID)
@@ -222,34 +175,27 @@ namespace YemekTBackend.Services
         public static async void DeleteRecipeFromAllUsers(string recipeID)
         {
             QuerySnapshot querySnap = await database.Collection("kullanicilar").GetSnapshotAsync();
-            
-            foreach(DocumentSnapshot docSnap in querySnap)
+            foreach (DocumentSnapshot docSnap in querySnap)
             {
-                if (docSnap.GetValue<List<string>>("likedRecipes").Contains(recipeID)){
+                if (docSnap.GetValue<List<string>>("likedRecipes").Contains(recipeID))
+                {
                     List<string> newLikedList = docSnap.GetValue<List<string>>("likedRecipes");
                     newLikedList.Remove(recipeID);
-
                     await docSnap.Reference.UpdateAsync(new Dictionary<FieldPath, object>
                     {
                         {new FieldPath("likedRecipes"), newLikedList }
                     });
                 }
-
                 if (docSnap.GetValue<List<string>>("addedRecipes").Contains(recipeID))
                 {
                     List<string> newAddedList = docSnap.GetValue<List<string>>("addedRecipes");
                     newAddedList.Remove(recipeID);
-
                     await docSnap.Reference.UpdateAsync(new Dictionary<FieldPath, object>
                     {
                         {new FieldPath("addedRecipes"), newAddedList }
-
                     });
                 }
             }
-        }  
-
-
-
+        }
     }
 }
