@@ -79,9 +79,17 @@ namespace YemekTBackend.Controllers
         [HttpPost("duzenleAdmin")]
         public async Task<ActionResult<Yemek>> YemekDuzenleAdmin(YemekAdmin yemek)
         {
-            await YemekService.YemekAdminDuzenle(yemek);
+            await YemekService.YemekDuzenleAdmin(yemek);
             return Ok();
         }
+
+        [HttpPost("duzenleKullanici")]
+        public async Task<ActionResult<Yemek>> YemekDuzenleKullanici(YemekAdmin yemek)
+        {
+            await YemekService.YemekDuzenleKullanici(yemek);
+            return Ok();
+        }
+
 
 
 

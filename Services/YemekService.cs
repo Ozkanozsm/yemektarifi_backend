@@ -88,7 +88,7 @@ namespace YemekTBackend.Services
 
         }
 
-        public static async Task<int> YemekAdminDuzenle(YemekAdmin yemek)
+        public static async Task<int> YemekDuzenleAdmin(YemekAdmin yemek)
         {
             var gelenid = yemek.yemekID;
 
@@ -97,6 +97,23 @@ namespace YemekTBackend.Services
             Dictionary<FieldPath, object> updates = new()
             {
                 { new FieldPath("adminOnayi"), 1 },
+                { new FieldPath("hazirlanmaSuresi"), yemek.hazirlanmaSuresi },
+                { new FieldPath("kategori"), yemek.kategori },
+                { new FieldPath("malzemeler"), yemek.malzemeler },
+                { new FieldPath("yemekIsim"), yemek.yemekIsim },
+                { new FieldPath("yemekTarif"), yemek.yemekTarif }
+            };
+            await docref.UpdateAsync(updates);
+            return 1;
+        }
+        public static async Task<int> YemekDuzenleKullanici(YemekAdmin yemek)
+        {
+            var gelenid = yemek.yemekID;
+
+            DocumentSnapshot docsnap = await database.Collection("yemekler").Document(gelenid).GetSnapshotAsync();
+            DocumentReference docref = docsnap.Reference;
+            Dictionary<FieldPath, object> updates = new()
+            {
                 { new FieldPath("hazirlanmaSuresi"), yemek.hazirlanmaSuresi },
                 { new FieldPath("kategori"), yemek.kategori },
                 { new FieldPath("malzemeler"), yemek.malzemeler },

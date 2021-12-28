@@ -223,6 +223,20 @@ namespace YemekTBackend.Services
             return false;
         }
 
+
+        public static bool IsValidEmail(string eMail)
+        {
+            try
+            {
+                var _eMail = new System.Net.Mail.MailAddress(eMail);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         
     }
 }

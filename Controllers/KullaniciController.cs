@@ -31,7 +31,7 @@ namespace YemekTBackend.Controllers
         public async Task<ActionResult<Kullanici>> CreateUser(Kullanici user)
         {
 
-            if (!KullaniciService.checkIsAlreadyIn(user).Result)
+            if (!KullaniciService.checkIsAlreadyIn(user).Result && KullaniciService.IsValidEmail(user.eMail))
             {
                 return await KullaniciService.CreateUser(user);
             }
